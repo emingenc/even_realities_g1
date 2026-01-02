@@ -108,10 +108,10 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
     // );
 
     // Or sync manually
-    await _manager.timeWeather.sync(G1WeatherModel(
+    await _manager.timeWeather.sync(
       weatherIcon: G1WeatherIcon.sunny,
       temperatureInCelsius: 22,
-    ));
+    );
   }
 
   Future<void> _showDashboard() async {
@@ -129,11 +129,11 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
   Future<void> _addQuickNote() async {
     if (!_manager.isConnected) return;
 
-    await _manager.notes.add(G1NoteModel(
+    await _manager.notes.add(
       noteNumber: 1,
       name: 'Reminder',
       text: 'Remember to buy groceries',
-    ));
+    );
   }
 
   Future<void> _startNavigation() async {
