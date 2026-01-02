@@ -16,21 +16,36 @@ A comprehensive Dart/Flutter library for controlling Even Realities G1 smart gla
 
 ## Installation
 
+### Option 1: Git (Recommended)
+
 Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
   even_realities_g1:
     git:
-      url: https://github.com/your-org/even_realities_g1.git
+      url: https://github.com/emingenc/even_realities_g1.git
 ```
 
-Or for local development:
+### Option 2: pub.dev
+
+```yaml
+dependencies:
+  even_realities_g1: ^0.1.0
+```
+
+### Option 3: Local Path (for development)
 
 ```yaml
 dependencies:
   even_realities_g1:
     path: ../even_realities_g1
+```
+
+Then run:
+
+```bash
+flutter pub get
 ```
 
 ## Platform Setup
