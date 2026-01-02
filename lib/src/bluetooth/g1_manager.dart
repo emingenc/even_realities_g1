@@ -63,6 +63,7 @@ class G1Manager {
 
   // Scanning state
   Timer? _scanTimer;
+  StreamSubscription? _scanSubscription;
   bool _isScanning = false;
   int _retryCount = 0;
   bool _connectionCallbackFired = false;
@@ -162,7 +163,8 @@ class G1Manager {
       throw Exception(msg);
     }
 
-    if (!await FlutterBluePlus.isOn) {
+    final adapterState = await FlutterBluePlus.adapterState.first;
+    if (adapterState != BluetoothAdapterState.on) {
       final msg = 'Bluetooth is turned off';
       onUpdate?.call(msg);
       throw Exception(msg);
@@ -189,6 +191,9 @@ class G1Manager {
     OnConnected? onConnected,
     Duration timeout,
   ) async {
+    // Cancel any existing subscription to avoid stacking listeners
+    await _scanSubscription?.cancel();
+    _scanSubscription = null;
     await FlutterBluePlus.stopScan();
     debugPrint(
         'Starting scan attempt ${_retryCount + 1}/${BluetoothConstants.maxScanRetries}');
@@ -201,13 +206,8 @@ class G1Manager {
       }
     });
 
-    await FlutterBluePlus.startScan(
-      timeout: timeout,
-      androidUsesFineLocation: true,
-    );
-
-    // Listen for scan results
-    FlutterBluePlus.scanResults.listen(
+    // Subscribe to scan results BEFORE starting scan
+    _scanSubscription = FlutterBluePlus.scanResults.listen(
       (results) {
         for (final result in results) {
           final deviceName = result.device.platformName;
@@ -221,6 +221,12 @@ class G1Manager {
         debugPrint('Scan error: $error');
         onUpdate?.call(error.toString());
       },
+    );
+
+    await FlutterBluePlus.startScan(
+      withServices: [Guid(BluetoothConstants.uartServiceUuid)],
+      timeout: timeout,
+      androidUsesFineLocation: true,
     );
   }
 
@@ -359,6 +365,8 @@ class G1Manager {
   /// Stop scanning for glasses.
   Future<void> stopScan() async {
     _scanTimer?.cancel();
+    await _scanSubscription?.cancel();
+    _scanSubscription = null;
     await FlutterBluePlus.stopScan();
     _isScanning = false;
     debugPrint('Scanning stopped');

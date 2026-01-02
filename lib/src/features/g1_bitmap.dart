@@ -59,9 +59,6 @@ class G1Bitmap {
     // Extract pixel data
     final pixelData = bmpData.sublist(headerSize);
 
-    // Calculate row stride (padded to 4 bytes)
-    final rowStride = ((width + 31) ~/ 32) * 4;
-
     // Build packets
     final packets = <Uint8List>[];
     final maxPacketSize = 190; // Max payload per packet

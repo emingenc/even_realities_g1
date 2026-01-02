@@ -109,6 +109,30 @@ class G1Commands {
   /// System control command group
   static const int systemControl = 0x23;
 
+  /// Hardware settings (0x26)
+  static const int hardwareSet = 0x26;
+
+  /// Hardware get (0x3F)
+  static const int hardwareGet = 0x3F;
+
+  /// Hardware display get (0x3B)
+  static const int hardwareDisplayGet = 0x3B;
+
+  /// Head up action set (0x08)
+  static const int headUpAction = 0x08;
+
+  /// Language set (0x3D)
+  static const int languageSet = 0x3D;
+
+  /// Info battery and firmware get (0x2C)
+  static const int infoBatteryFirmware = 0x2C;
+
+  /// Wear detection set (0x27)
+  static const int wearDetection = 0x27;
+
+  /// Wear detection get (0x3A)
+  static const int wearDetectionGet = 0x3A;
+
   /// Original text (translation)
   static const int translateOriginal = 0x0F;
 
@@ -191,4 +215,119 @@ class G1NoteSubCommands {
 
   /// Delete all notes
   static const int deleteAll = 0x05;
+}
+
+/// Hardware Set (0x26) subcommands
+class G1HardwareSubCommands {
+  G1HardwareSubCommands._();
+
+  /// Set display height and depth
+  static const int heightAndDepth = 0x02;
+
+  /// Double tap action setting
+  static const int doubleTapAction = 0x04;
+
+  /// Long press action setting
+  static const int longPressAction = 0x07;
+
+  /// Activate mic on head lift
+  static const int headLiftMic = 0x08;
+}
+
+/// Double-tap action options
+class G1DoubleTapAction {
+  G1DoubleTapAction._();
+
+  /// Close active feature / None
+  static const int none = 0x00;
+
+  /// Open Translate
+  static const int translate = 0x02;
+
+  /// Open Teleprompter
+  static const int teleprompter = 0x03;
+
+  /// Show Dashboard
+  static const int dashboard = 0x04;
+
+  /// Open Transcribe
+  static const int transcribe = 0x05;
+}
+
+/// Head-up action modes
+class G1HeadUpAction {
+  G1HeadUpAction._();
+
+  /// Show the Dashboard on head lift
+  static const int showDashboard = 0x00;
+
+  /// Do nothing on head lift
+  static const int doNothing = 0x02;
+}
+
+/// Dashboard mode options
+class G1DashboardMode {
+  G1DashboardMode._();
+
+  /// Full dashboard view
+  static const int full = 0x00;
+
+  /// Dual pane view
+  static const int dual = 0x01;
+
+  /// Minimal view
+  static const int minimal = 0x02;
+}
+
+/// Secondary pane options for dashboard
+class G1SecondaryPane {
+  G1SecondaryPane._();
+
+  /// Notes pane
+  static const int notes = 0x00;
+
+  /// Stock/graph pane
+  static const int stock = 0x01;
+
+  /// News pane
+  static const int news = 0x02;
+
+  /// Calendar pane
+  static const int calendar = 0x03;
+
+  /// Map pane
+  static const int map = 0x04;
+
+  /// Empty pane
+  static const int empty = 0x05;
+}
+
+/// System Control (0x23) subcommands
+class G1SystemControlSubCommands {
+  G1SystemControlSubCommands._();
+
+  /// Enable/disable debug logging (0x6C)
+  static const int debugLogging = 0x6C;
+
+  /// Reboot the glasses (0x72)
+  static const int reboot = 0x72;
+
+  /// Get firmware build info (0x74)
+  static const int firmwareBuildInfo = 0x74;
+}
+
+/// System Language IDs for Language Set (0x3D)
+///
+/// Note: This is different from G1Language in g1_translate.dart which uses
+/// string codes for translation features.
+class G1SystemLanguage {
+  G1SystemLanguage._();
+
+  static const int chinese = 0x01;
+  static const int english = 0x02;
+  static const int japanese = 0x03;
+  static const int french = 0x05;
+  static const int german = 0x06;
+  static const int spanish = 0x07;
+  static const int italian = 0x0E;
 }

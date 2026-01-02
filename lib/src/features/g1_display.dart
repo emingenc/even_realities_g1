@@ -121,8 +121,6 @@ class G1Display {
         ? G1ScreenStatus.displayComplete
         : (G1ScreenStatus.displaying | G1ScreenStatus.newContent);
 
-    String lastPageText = '';
-
     for (int pn = 1, lineIndex = 0; lineIndex < lines.length; pn++, lineIndex += 5) {
       var pageLines = lines.sublist(
         lineIndex,
@@ -138,7 +136,6 @@ class G1Display {
       }
 
       final pageText = pageLines.join('\n');
-      lastPageText = pageText;
 
       final packet = _buildTextPacket(
         textMessage: pageText,

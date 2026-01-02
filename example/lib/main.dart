@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:even_realities_g1/even_realities_g1.dart';
 
@@ -155,6 +157,42 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
     );
   }
 
+  Future<void> _showNotesDashboard() async {
+    if (!_manager.isConnected) return;
+
+    // First add some notes
+    await _manager.notes.add(
+      noteNumber: 1,
+      name: 'Todo',
+      text: 'Review pull requests',
+    );
+    await _manager.notes.add(
+      noteNumber: 2,
+      name: 'Shopping',
+      text: 'Milk, eggs, bread',
+    );
+
+    // Then switch dashboard to notes pane
+    await _manager.dashboard.showNotesPane();
+    setState(() => _status = 'Showing notes pane');
+  }
+
+  Future<void> _toggleDoubleTapAction() async {
+    if (!_manager.isConnected) return;
+
+    // For demo, just set to dashboard
+    await _manager.settings.setDoubleTapAction(G1DoubleTapActionType.dashboard);
+    setState(() => _status = 'Double-tap: Show Dashboard');
+  }
+
+  Future<void> _toggleHeadLiftMic() async {
+    if (!_manager.isConnected) return;
+
+    // Toggle head lift mic
+    await _manager.settings.setHeadLiftMicEnabled(true);
+    setState(() => _status = 'Head-lift mic enabled');
+  }
+
   Future<void> _addQuickNote() async {
     if (!_manager.isConnected) return;
 
@@ -189,7 +227,9 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
   }
 
   bool _isRecording = false;
-  List<int> _audioBuffer = [];
+  final VoiceDataCollector _voiceCollector = VoiceDataCollector();
+  String _lastTranscription = '';
+  StreamSubscription? _audioPacketSub;
 
   Future<void> _startWhisperTest() async {
     if (!_manager.isConnected) return;
@@ -197,36 +237,51 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
     if (_isRecording) {
       // Stop recording and process audio
       await _manager.microphone.disable();
+      await _audioPacketSub?.cancel();
+      _audioPacketSub = null;
+
+      final audioBytes = _voiceCollector.getAllDataAndReset();
       setState(() {
         _isRecording = false;
-        _status = 'Processing audio (${_audioBuffer.length} bytes)...';
+        _status = 'Processing audio (${audioBytes.length} bytes)...';
       });
-      
-      // Here you would send _audioBuffer to Whisper API
-      // For now, just show that we captured audio
-      if (_audioBuffer.isNotEmpty) {
+
+      // TODO: Decode LC3 -> PCM16, then run Whisper.
+      // For now we display a clear placeholder and the captured byte count.
+      final transcript = audioBytes.isEmpty
+          ? ''
+          : '[TODO] Whisper transcription not wired. Captured ${audioBytes.length} bytes.';
+
+      if (transcript.isNotEmpty) {
         setState(() {
-          _status = 'Captured ${_audioBuffer.length} bytes of audio';
+          _lastTranscription = transcript;
+          _status = 'Transcript ready';
         });
-        // Display result on glasses
-        await _manager.display.showText(
-          'Audio captured!\n\n${_audioBuffer.length} bytes recorded.\nReady for Whisper transcription.',
-        );
+
+        await _manager.display.showText(transcript);
+      } else {
+        setState(() {
+          _status = 'No audio captured';
+          _lastTranscription = '';
+        });
+        await _manager.display.showText('No audio captured.');
       }
-      _audioBuffer.clear();
     } else {
       // Start recording
-      _audioBuffer.clear();
+
+      _voiceCollector.reset();
+      await _audioPacketSub?.cancel();
       
-      // Listen for audio data
-      _manager.microphone.audioStream.listen((data) {
-        _audioBuffer.addAll(data);
+      // Listen for audio packets and reassemble by sequence
+      _audioPacketSub = _manager.microphone.audioPacketStream.listen((pkt) {
+        _voiceCollector.addChunk(pkt.seq, pkt.data);
       });
       
       await _manager.microphone.enable();
       setState(() {
         _isRecording = true;
         _status = 'Recording... Tap again to stop';
+        _lastTranscription = '';
       });
     }
   }
@@ -261,6 +316,14 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
                       _status,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
+                    if (_lastTranscription.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        _lastTranscription,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -290,9 +353,10 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
             // Features
             Expanded(
               child: GridView.count(
-                crossAxisCount: 2,
+                crossAxisCount: 3,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
+                childAspectRatio: 1.0,
                 children: [
                   _FeatureButton(
                     icon: Icons.notifications,
@@ -306,13 +370,18 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
                   ),
                   _FeatureButton(
                     icon: Icons.cloud,
-                    label: 'Time & Weather',
+                    label: 'Weather',
                     onPressed: isConnected ? _syncTimeWeather : null,
                   ),
                   _FeatureButton(
                     icon: Icons.dashboard,
-                    label: 'Dashboard',
+                    label: 'Calendar',
                     onPressed: isConnected ? _showDashboard : null,
+                  ),
+                  _FeatureButton(
+                    icon: Icons.sticky_note_2,
+                    label: 'Notes Pane',
+                    onPressed: isConnected ? _showNotesDashboard : null,
                   ),
                   _FeatureButton(
                     icon: Icons.note_add,
@@ -333,6 +402,16 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
                     icon: _isRecording ? Icons.stop : Icons.mic,
                     label: _isRecording ? 'Stop Rec' : 'Whisper',
                     onPressed: isConnected ? _startWhisperTest : null,
+                  ),
+                  _FeatureButton(
+                    icon: Icons.touch_app,
+                    label: 'DblTap Cfg',
+                    onPressed: isConnected ? _toggleDoubleTapAction : null,
+                  ),
+                  _FeatureButton(
+                    icon: Icons.mic_external_on,
+                    label: 'HeadLift Mic',
+                    onPressed: isConnected ? _toggleHeadLiftMic : null,
                   ),
                 ],
               ),

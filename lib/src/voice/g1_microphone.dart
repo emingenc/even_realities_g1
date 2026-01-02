@@ -3,13 +3,28 @@ import 'dart:async';
 import '../bluetooth/g1_connection_state.dart';
 import '../bluetooth/g1_manager.dart';
 import '../protocol/commands.dart';
+import 'voice_data_collector.dart';
+
+/// A single microphone audio packet from the glasses.
+class G1AudioPacket {
+  final int seq;
+  final List<int> data;
+
+  const G1AudioPacket({required this.seq, required this.data});
+}
 
 /// G1 Microphone feature for voice control and audio streaming.
 class G1Microphone {
   final G1Manager _manager;
 
+  final VoiceDataCollector _aiSessionCollector = VoiceDataCollector();
+
   /// Stream controller for raw audio data
   final _audioStreamController = StreamController<List<int>>.broadcast();
+
+  /// Stream controller for sequenced audio packets
+  final _audioPacketStreamController =
+      StreamController<G1AudioPacket>.broadcast();
 
   /// Whether the microphone is currently active
   bool _isActive = false;
@@ -36,6 +51,10 @@ class G1Microphone {
 
   /// Stream of raw LC3 audio data from the microphone.
   Stream<List<int>> get audioStream => _audioStreamController.stream;
+
+  /// Stream of audio packets including the device sequence number.
+  Stream<G1AudioPacket> get audioPacketStream =>
+      _audioPacketStreamController.stream;
 
   /// Whether the microphone is currently active.
   bool get isActive => _isActive;
@@ -112,12 +131,16 @@ class G1Microphone {
 
       case G1AISubCommands.startRecording:
         _isActive = true;
+        _aiSessionCollector.reset();
         onAISessionStart?.call();
         break;
 
       case G1AISubCommands.stopRecording:
         _isActive = false;
-        // Audio data will be collected via the stream
+        final audioData = _aiSessionCollector.getAllDataAndReset();
+        if (audioData.isNotEmpty) {
+          onAISessionEnd?.call(audioData);
+        }
         break;
     }
   }
@@ -137,12 +160,16 @@ class G1Microphone {
 
   void _handleVoiceData(GlassSide side, int seq, List<int> audioData) {
     if (!_isActive) return;
-    
+
+    _aiSessionCollector.addChunk(seq, audioData);
+
+    _audioPacketStreamController.add(G1AudioPacket(seq: seq, data: audioData));
     _audioStreamController.add(audioData);
   }
 
   /// Dispose of resources.
   void dispose() {
     _audioStreamController.close();
+    _audioPacketStreamController.close();
   }
 }
