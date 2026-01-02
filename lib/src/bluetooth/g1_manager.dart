@@ -65,6 +65,7 @@ class G1Manager {
   Timer? _scanTimer;
   bool _isScanning = false;
   int _retryCount = 0;
+  bool _connectionCallbackFired = false;
 
   // Features
   late final G1Display display;
@@ -170,12 +171,14 @@ class G1Manager {
     // Reset state
     _isScanning = true;
     _retryCount = 0;
+    _connectionCallbackFired = false;
     _leftGlass = null;
     _rightGlass = null;
 
     _connectionStateController.add(const G1ConnectionEvent(
       state: G1ConnectionState.scanning,
     ));
+    onConnectionChanged?.call(G1ConnectionState.scanning, null);
 
     await _startScan(onUpdate, onGlassesFound, onConnected, timeout);
   }
@@ -257,23 +260,39 @@ class G1Manager {
     if (glass != null) {
       await glass.connect();
       _setupReconnect(glass);
+      
+      // Check if both glasses are now connected after this connection completes
+      _checkBothConnected(onUpdate, onGlassesFound, onConnected);
     }
-
+  }
+  
+  void _checkBothConnected(
+    OnStatusUpdate? onUpdate,
+    OnGlassesFound? onGlassesFound,
+    OnConnected? onConnected,
+  ) {
+    // Prevent duplicate callbacks
+    if (_connectionCallbackFired) return;
+    
     // Check if both glasses are found and connected
-    if (_leftGlass != null && _rightGlass != null) {
-      _isScanning = false;
-      await stopScan();
+    if (_leftGlass != null && _rightGlass != null &&
+        _leftGlass!.isConnected && _rightGlass!.isConnected) {
+      _connectionCallbackFired = true;
+      
+      if (_isScanning) {
+        _isScanning = false;
+        stopScan();
+      }
 
       onGlassesFound?.call(_leftGlass!.name, _rightGlass!.name);
-
-      if (_leftGlass!.isConnected && _rightGlass!.isConnected) {
-        _connectionStateController.add(G1ConnectionEvent(
-          state: G1ConnectionState.connected,
-          leftGlassName: _leftGlass!.name,
-          rightGlassName: _rightGlass!.name,
-        ));
-        onConnected?.call();
-      }
+      
+      _connectionStateController.add(G1ConnectionEvent(
+        state: G1ConnectionState.connected,
+        leftGlassName: _leftGlass!.name,
+        rightGlassName: _rightGlass!.name,
+      ));
+      onConnectionChanged?.call(G1ConnectionState.connected, null);
+      onConnected?.call();
     }
   }
 
@@ -328,6 +347,12 @@ class G1Manager {
         errorMessage:
             _leftGlass == null && _rightGlass == null ? message : null,
       ));
+      onConnectionChanged?.call(
+        _leftGlass == null && _rightGlass == null
+            ? G1ConnectionState.error
+            : G1ConnectionState.connected,
+        null,
+      );
     }
   }
 
@@ -376,6 +401,7 @@ class G1Manager {
       leftGlassName: _leftGlass!.name,
       rightGlassName: _rightGlass!.name,
     ));
+    onConnectionChanged?.call(G1ConnectionState.connected, null);
   }
 
   /// Send a command to both glasses.
@@ -427,6 +453,7 @@ class G1Manager {
     _connectionStateController.add(const G1ConnectionEvent(
       state: G1ConnectionState.disconnected,
     ));
+    onConnectionChanged?.call(G1ConnectionState.disconnected, null);
   }
 
   /// Dispose of resources.

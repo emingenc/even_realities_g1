@@ -67,7 +67,36 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
   }
 
   Future<void> _scan() async {
-    await _manager.startScan();
+    setState(() {
+      _connectionState = G1ConnectionState.scanning;
+      _status = 'Scanning for glasses...';
+    });
+    
+    try {
+      await _manager.startScan(
+        onUpdate: (message) {
+          setState(() {
+            _status = message;
+          });
+        },
+        onGlassesFound: (left, right) {
+          setState(() {
+            _status = 'Found: $left, $right';
+          });
+        },
+        onConnected: () {
+          setState(() {
+            _connectionState = G1ConnectionState.connected;
+            _status = 'Both glasses connected';
+          });
+        },
+      );
+    } catch (e) {
+      setState(() {
+        _connectionState = G1ConnectionState.error;
+        _status = 'Error: $e';
+      });
+    }
   }
 
   Future<void> _disconnect() async {
@@ -80,10 +109,10 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
     await _manager.notifications.send(
       G1NotificationModel(
         messageId: _messageId++,
-        appIdentifier: 'dev.example.g1demo',
-        displayName: 'G1 Example',
-        title: 'Hello G1!',
-        message: 'This is a test notification from the example app.',
+        appIdentifier: 'org.telegram.messenger',
+        displayName: 'Telegram',
+        title: 'New Message',
+        message: 'Hey! This is a test message from Telegram.',
       ),
     );
   }
@@ -144,7 +173,7 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
 
     // Then show directions
     await _manager.navigation.showDirections(G1NavigationModel(
-      turn: G1NavigationTurn.left,
+      turn: G1NavigationTurn.left,  // Uses correct code 0x04
       direction: 'Turn left',
       distance: '500m',
       speed: '30 km/h',
@@ -157,6 +186,49 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
     if (!_manager.isConnected) return;
 
     await _manager.navigation.stop();
+  }
+
+  bool _isRecording = false;
+  List<int> _audioBuffer = [];
+
+  Future<void> _startWhisperTest() async {
+    if (!_manager.isConnected) return;
+
+    if (_isRecording) {
+      // Stop recording and process audio
+      await _manager.microphone.disable();
+      setState(() {
+        _isRecording = false;
+        _status = 'Processing audio (${_audioBuffer.length} bytes)...';
+      });
+      
+      // Here you would send _audioBuffer to Whisper API
+      // For now, just show that we captured audio
+      if (_audioBuffer.isNotEmpty) {
+        setState(() {
+          _status = 'Captured ${_audioBuffer.length} bytes of audio';
+        });
+        // Display result on glasses
+        await _manager.display.showText(
+          'Audio captured!\n\n${_audioBuffer.length} bytes recorded.\nReady for Whisper transcription.',
+        );
+      }
+      _audioBuffer.clear();
+    } else {
+      // Start recording
+      _audioBuffer.clear();
+      
+      // Listen for audio data
+      _manager.microphone.audioStream.listen((data) {
+        _audioBuffer.addAll(data);
+      });
+      
+      await _manager.microphone.enable();
+      setState(() {
+        _isRecording = true;
+        _status = 'Recording... Tap again to stop';
+      });
+    }
   }
 
   @override
@@ -256,6 +328,11 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
                     icon: Icons.navigation_outlined,
                     label: 'Stop Nav',
                     onPressed: isConnected ? _stopNavigation : null,
+                  ),
+                  _FeatureButton(
+                    icon: _isRecording ? Icons.stop : Icons.mic,
+                    label: _isRecording ? 'Stop Rec' : 'Whisper',
+                    onPressed: isConnected ? _startWhisperTest : null,
                   ),
                 ],
               ),

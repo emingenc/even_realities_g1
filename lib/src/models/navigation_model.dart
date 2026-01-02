@@ -1,16 +1,42 @@
 
 /// Navigation turn icons
+/// Based on fahrplan reference implementation
 enum G1NavigationTurn {
-  straight(0x00),
-  slightLeft(0x01),
-  left(0x02),
-  sharpLeft(0x03),
-  slightRight(0x04),
-  right(0x05),
-  sharpRight(0x06),
-  uTurn(0x07),
-  destination(0x08),
-  roundabout(0x09);
+  straightDot(0x01),
+  straight(0x02),
+  right(0x03),
+  left(0x04),
+  slightRight(0x05),
+  slightLeft(0x06),
+  sharpRight(0x07),
+  sharpLeft(0x08),
+  uTurnLeft(0x09),
+  uTurnRight(0x0A),
+  merge(0x0B),
+  roundabout1(0x0C),
+  roundabout2(0x0D),
+  roundabout3(0x0E),
+  roundabout4(0x0F),
+  roundabout5(0x10),
+  roundabout6(0x11),
+  roundabout7(0x12),
+  roundabout8(0x13),
+  roundaboutLeft1(0x14),
+  roundaboutLeft2(0x15),
+  roundaboutLeft3(0x16),
+  roundaboutLeft4(0x17),
+  roundaboutLeft5(0x18),
+  roundaboutLeft6(0x19),
+  roundaboutLeft7(0x1A),
+  roundaboutLeft8(0x1B),
+  laneRight(0x1C),
+  laneLeft(0x1D),
+  laneHalfRight(0x1E),
+  laneHalfLeft(0x1F),
+  arrive(0x20),
+  arriveRight(0x21),
+  arriveLeft(0x22),
+  ferry(0x23);
 
   final int code;
   const G1NavigationTurn(this.code);
