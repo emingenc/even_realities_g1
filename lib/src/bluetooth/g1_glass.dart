@@ -102,9 +102,17 @@ class G1Glass {
 
     // Check for ACK response
     final commandByte = data[0];
-    if (_ackCompleters.containsKey(commandByte)) {
-      _ackCompleters[commandByte]?.complete();
-      _ackCompleters.remove(commandByte);
+    if (_ackCompleters.containsKey(commandByte) && data.length >= 2) {
+      final status = data[1];
+      if (status == G1ResponseStatus.success || status == 0xCB) {
+        _ackCompleters[commandByte]?.complete();
+        _ackCompleters.remove(commandByte);
+      } else if (status == G1ResponseStatus.failure) {
+        _ackCompleters[commandByte]?.completeError(
+          StateError('Command failed: 0x${commandByte.toRadixString(16)}'),
+        );
+        _ackCompleters.remove(commandByte);
+      }
     }
 
     // Forward data to callback

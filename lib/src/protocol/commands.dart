@@ -8,6 +8,9 @@ class G1Commands {
   /// Start AI/voice assistant mode
   static const int startAI = 0xF5;
 
+  /// Event stream from device (shares 0xF5 command byte)
+  static const int event = 0xF5;
+
   /// Open/close microphone
   static const int openMic = 0x0E;
 
@@ -17,14 +20,25 @@ class G1Commands {
   /// Receive microphone data
   static const int receiveMicData = 0xF1;
 
-  /// Initialize glasses
+  /// Debug log messages (device -> host)
+  static const int debug = 0xF4;
+
+  /// MTU set (wiki: 0x4D FB to request 251)
+  ///
+  /// Kept as `init` for backwards-compatibility with earlier versions.
   static const int init = 0x4D;
+
+  /// MTU set (alias of `init`)
+  static const int mtuSet = 0x4D;
 
   /// Heartbeat to keep connection alive
   static const int heartbeat = 0x25;
 
   /// Send text result to display
   static const int sendResult = 0x4E;
+
+  /// Text set (alias of `sendResult`)
+  static const int textSet = 0x4E;
 
   /// Quick note list notification
   static const int quickNote = 0x21;
@@ -37,6 +51,12 @@ class G1Commands {
 
   /// Send notification to glasses
   static const int notification = 0x4B;
+
+  /// Clear a notification by message id
+  static const int notificationClear = 0x4C;
+
+  /// Notification auto display configuration
+  static const int notificationAutoDisplay = 0x4F;
 
   /// Toggle silent mode
   static const int silentMode = 0x03;
@@ -54,6 +74,9 @@ class G1Commands {
   static const int headUpDisplay = 0x0C;
 
   /// Sync time command
+  ///
+  /// Note: the wiki uses 0x09 for Teleprompter Control; time/weather updates are
+  /// typically done via Dashboard Set (0x06) subcommands.
   static const int syncTime = 0x09;
 
   /// Show/hide dashboard
@@ -82,6 +105,9 @@ class G1Commands {
 
   /// Translation command
   static const int translate = 0x50;
+
+  /// System control command group
+  static const int systemControl = 0x23;
 
   /// Original text (translation)
   static const int translateOriginal = 0x0F;

@@ -14,6 +14,10 @@ A comprehensive Dart/Flutter library for controlling Even Realities G1 smart gla
 - 🌐 **Translation** - Real-time translation display
 - 🖼️ **Bitmap Display** - Send custom images to the glasses
 
+## Documentation
+
+- BLE protocol notes: [docs/BLE_PROTOCOL.md](docs/BLE_PROTOCOL.md)
+
 ## Installation
 
 ### Option 1: Git (Recommended)

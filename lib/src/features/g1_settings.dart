@@ -1,5 +1,4 @@
-import 'dart:typed_data';
-
+import '../bluetooth/g1_connection_state.dart';
 import '../bluetooth/g1_manager.dart';
 import '../protocol/commands.dart';
 
@@ -39,10 +38,25 @@ class G1Settings {
       throw StateError('Not connected to glasses');
     }
 
-    await _manager.sendCommand([
-      G1Commands.brightness,
-      brightness.value,
-    ]);
+    // Wiki: Brightness Set (0x01) payload is [level(0x00..0x2A), auto(0/1)] and is sent to Right.
+    final bool auto = brightness == G1Brightness.auto;
+    final int level = switch (brightness) {
+      G1Brightness.auto => 0x00,
+      G1Brightness.level1 => 0x08,
+      G1Brightness.level2 => 0x10,
+      G1Brightness.level3 => 0x18,
+      G1Brightness.level4 => 0x20,
+      G1Brightness.level5 => 0x2A,
+    };
+
+    await _manager.sendCommandToSide(
+      GlassSide.right,
+      [
+        G1Commands.brightness,
+        level & 0xFF,
+        auto ? 0x01 : 0x00,
+      ],
+    );
   }
 
   /// Enable or disable silent mode.
@@ -53,9 +67,10 @@ class G1Settings {
       throw StateError('Not connected to glasses');
     }
 
+    // Wiki: Silent Mode Set (0x03) uses fixed bytes: 0x0C (on) / 0x0A (off)
     await _manager.sendCommand([
       G1Commands.silentMode,
-      enabled ? 0x01 : 0x00,
+      enabled ? 0x0C : 0x0A,
     ]);
   }
 
@@ -67,11 +82,15 @@ class G1Settings {
       throw StateError('Not connected to glasses');
     }
 
-    // Angle is sent as a byte value
-    await _manager.sendCommand([
-      G1Commands.headUpAngle,
-      angle.clamp(0, 90),
-    ]);
+    // Wiki: Head Up Angle Set (0x0B) appears as [0x0B, 0x00..0x3C, 0x01] and is sent to Right.
+    await _manager.sendCommandToSide(
+      GlassSide.right,
+      [
+        G1Commands.headUpAngle,
+        angle.clamp(0, 60),
+        0x01,
+      ],
+    );
   }
 
   /// Enable or disable head-up display mode.
@@ -103,29 +122,11 @@ class G1Settings {
       throw StateError('Not connected to glasses');
     }
 
-    // Sync current time
-    final now = DateTime.now();
-    await _syncTime(now);
-
     // Set default brightness to auto
     await setBrightness(G1Brightness.auto);
 
     // Enable head-up display by default
     await setHeadUpDisplay(true);
-  }
-
-  Future<void> _syncTime(DateTime time) async {
-    final unixTime = time.millisecondsSinceEpoch ~/ 1000;
-    final tzOffset = time.timeZoneOffset.inMinutes ~/ 15; // Quarter hours
-
-    final data = Uint8List(6);
-    final view = ByteData.sublistView(data);
-
-    view.setUint32(0, unixTime, Endian.little);
-    view.setInt8(4, tzOffset);
-    view.setUint8(5, 0x00); // Reserved
-
-    await _manager.sendCommand([G1Commands.syncTime, ...data]);
   }
 
   /// Get battery level from the glasses.

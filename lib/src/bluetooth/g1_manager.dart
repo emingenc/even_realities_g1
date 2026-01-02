@@ -437,6 +437,27 @@ class G1Manager {
     }
   }
 
+  /// Send a command to a specific side.
+  Future<void> sendCommandToSide(
+    GlassSide side,
+    List<int> command, {
+    bool needsAck = true,
+    Duration delay = Duration.zero,
+  }) async {
+    final glass = side == GlassSide.left ? _leftGlass : _rightGlass;
+    if (glass == null) return;
+
+    if (needsAck) {
+      await glass.sendDataWithAck(command);
+      return;
+    }
+
+    await glass.sendData(command);
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
+  }
+
   /// Clear the display on both glasses.
   Future<void> clearScreen() async {
     await sendCommand([G1Commands.clearScreen]);
