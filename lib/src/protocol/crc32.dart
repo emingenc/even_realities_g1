@@ -32,6 +32,12 @@ class Crc32 {
     }
   }
 
+  /// Alias for add() - update the CRC with new data.
+  void update(List<int> data) => add(data);
+
+  /// Get the current CRC value without finalizing.
+  int getValue() => _crc ^ 0xFFFFFFFF;
+
   /// Finalize and return the CRC32 value.
   int close() {
     return _crc ^ 0xFFFFFFFF;

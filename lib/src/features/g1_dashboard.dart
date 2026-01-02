@@ -1,4 +1,5 @@
 import '../bluetooth/g1_manager.dart';
+import '../models/calendar_model.dart';
 
 /// Dashboard layout options
 enum G1DashboardLayout {
@@ -46,5 +47,14 @@ class G1Dashboard {
 
     // Dashboard hide command
     await _manager.sendCommand([0x06, 0x00]);
+  }
+
+  /// Show a calendar event on the dashboard.
+  Future<void> showCalendar(G1CalendarModel calendar) async {
+    if (!_manager.isConnected) {
+      throw StateError('Not connected to glasses');
+    }
+
+    await _manager.sendCommand(calendar.buildDashboardCommand());
   }
 }

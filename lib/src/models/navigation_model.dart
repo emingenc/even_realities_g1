@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 /// Navigation turn icons
 enum G1NavigationTurn {

@@ -90,6 +90,9 @@ class G1Navigation {
     await _manager.sendCommand(_buildEndCommand());
   }
 
+  /// Stop navigation mode (alias for end).
+  Future<void> stop() => end();
+
   Uint8List _buildInitCommand() {
     final part = <int>[0x00, _seqId, 0x00, 0x01];
     final data = <int>[0x0A, part.length + 2, ...part];

@@ -32,6 +32,7 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
   final G1Manager _manager = G1Manager();
   G1ConnectionState _connectionState = G1ConnectionState.disconnected;
   String _status = 'Not connected';
+  int _messageId = 0;
 
   @override
   void initState() {
@@ -40,16 +41,16 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
   }
 
   void _setupListeners() {
-    _manager.connectionStream.listen((event) {
+    _manager.onConnectionChanged = (state, side) {
       setState(() {
-        _connectionState = event.state;
-        _status = _getStatusText(event);
+        _connectionState = state;
+        _status = _getStatusText(state);
       });
-    });
+    };
   }
 
-  String _getStatusText(G1ConnectionEvent event) {
-    switch (event.state) {
+  String _getStatusText(G1ConnectionState state) {
+    switch (state) {
       case G1ConnectionState.disconnected:
         return 'Disconnected';
       case G1ConnectionState.scanning:
@@ -57,11 +58,11 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
       case G1ConnectionState.connecting:
         return 'Connecting...';
       case G1ConnectionState.connected:
-        return event.isBothConnected
+        return _manager.isBothConnected
             ? 'Both glasses connected'
             : 'One glass connected';
-      case G1ConnectionState.failed:
-        return 'Failed: ${event.error}';
+      case G1ConnectionState.error:
+        return 'Connection error';
     }
   }
 
@@ -78,9 +79,11 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
 
     await _manager.notifications.send(
       G1NotificationModel(
+        messageId: _messageId++,
+        appIdentifier: 'dev.example.g1demo',
+        displayName: 'G1 Example',
         title: 'Hello G1!',
-        body: 'This is a test notification from the example app.',
-        appName: 'G1 Example',
+        message: 'This is a test notification from the example app.',
       ),
     );
   }
@@ -105,61 +108,55 @@ class _G1ExampleHomeState extends State<G1ExampleHome> {
     // );
 
     // Or sync manually
-    await _manager.timeWeather.sync(
-      G1WeatherModel(
-        weatherIcon: G1WeatherIcon.sunny,
-        temperature: 22,
-        temperatureUnit: TemperatureUnit.celsius,
-        timeFormat: TimeFormat.format24h,
-      ),
-    );
+    await _manager.timeWeather.sync(G1WeatherModel(
+      weatherIcon: G1WeatherIcon.sunny,
+      temperatureInCelsius: 22,
+    ));
   }
 
   Future<void> _showDashboard() async {
     if (!_manager.isConnected) return;
 
-    await _manager.dashboard.show(
-      layout: G1DashboardLayout.dual,
-      items: [
-        G1CalendarModel(
-          title: 'Team Meeting',
-          time: DateTime.now().add(const Duration(hours: 1)),
-        ),
-        G1CalendarModel(
-          title: 'Lunch Break',
-          time: DateTime.now().add(const Duration(hours: 3)),
-        ),
-      ],
+    await _manager.dashboard.showCalendar(
+      G1CalendarModel(
+        name: 'Team Meeting',
+        time: '14:00',
+        location: 'Room 101',
+      ),
     );
   }
 
   Future<void> _addQuickNote() async {
     if (!_manager.isConnected) return;
 
-    await _manager.notes.add(
-      G1NoteModel(
-        position: 1,
-        text: 'Remember to buy groceries',
-      ),
-    );
+    await _manager.notes.add(G1NoteModel(
+      noteNumber: 1,
+      name: 'Reminder',
+      text: 'Remember to buy groceries',
+    ));
   }
 
   Future<void> _startNavigation() async {
     if (!_manager.isConnected) return;
 
-    await _manager.navigation.start(
-      G1NavigationModel(
-        turnType: G1NavigationTurn.turnLeft,
-        distance: '500m',
-        streetName: 'Main Street',
-      ),
-    );
+    // First initialize navigation
+    await _manager.navigation.start();
+
+    // Then show directions
+    await _manager.navigation.showDirections(G1NavigationModel(
+      turn: G1NavigationTurn.left,
+      direction: 'Turn left',
+      distance: '500m',
+      speed: '30 km/h',
+      totalDuration: '15 min',
+      totalDistance: '5.2 km',
+    ));
   }
 
   Future<void> _stopNavigation() async {
     if (!_manager.isConnected) return;
 
-    await _manager.navigation.end();
+    await _manager.navigation.stop();
   }
 
   @override

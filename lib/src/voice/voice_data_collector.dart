@@ -1,4 +1,3 @@
-import 'dart:async';
 
 /// Collects and manages voice data chunks from the G1 microphone.
 ///

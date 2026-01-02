@@ -50,6 +50,12 @@ class G1Commands {
   /// Set head-up display angle
   static const int headUpAngle = 0x0B;
 
+  /// Enable/disable head-up display
+  static const int headUpDisplay = 0x0C;
+
+  /// Sync time command
+  static const int syncTime = 0x09;
+
   /// Show/hide dashboard
   static const int dashboardShow = 0x06;
 
@@ -136,6 +142,12 @@ class G1ScreenStatus {
 
   /// New content flag
   static const int newContent = 0x10;
+
+  /// Hide screen
+  static const int hideScreen = 0x00;
+
+  /// Show screen
+  static const int showScreen = 0x01;
 }
 
 /// Note subcommands for voice notes

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -98,11 +97,21 @@ class G1Manager {
   bool get isConnected =>
       _leftGlass?.isConnected == true && _rightGlass?.isConnected == true;
 
+  /// Whether both glasses are connected (alias for isConnected)
+  bool get isBothConnected => isConnected;
+
+  /// Whether at least one glass is connected
+  bool get isAnyConnected =>
+      _leftGlass?.isConnected == true || _rightGlass?.isConnected == true;
+
   /// Whether scanning is in progress
   bool get isScanning => _isScanning;
 
   /// Callback for data received from glasses
   G1DataCallback? onDataReceived;
+
+  /// Callback for connection state changes
+  void Function(G1ConnectionState state, GlassSide? side)? onConnectionChanged;
 
   void _initializeFeatures() {
     display = G1Display(this);
