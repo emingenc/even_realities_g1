@@ -1,0 +1,40 @@
+{
+  "buildFiles": [
+    "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/emingenc/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/emingenc/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "lc3::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "lc3",
+      "output": "/Users/emingenc/Documents/even_realities_g1/example/build/app/intermediates/cxx/Debug/5p1y4s1l/obj/arm64-v8a/liblc3.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [
+    "c"
+  ],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

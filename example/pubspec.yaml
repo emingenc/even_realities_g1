@@ -12,6 +12,11 @@ dependencies:
     sdk: flutter
   even_realities_g1:
     path: ../
+  http: ^1.2.0
+  path_provider: ^2.1.5
+  shared_preferences: ^2.3.4
+  # Local whisper using whisper.cpp (no ffmpeg dependency!)
+  whisper_flutter_new: ^1.0.1
 
 dev_dependencies:
   flutter_test:

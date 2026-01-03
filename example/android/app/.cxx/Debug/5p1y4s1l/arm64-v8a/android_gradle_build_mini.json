@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/emingenc/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/emingenc/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "lc3::@6890427a1f51a3e7e1df": {
+      "artifactName": "lc3",
+      "abi": "arm64-v8a",
+      "output": "/Users/emingenc/Documents/even_realities_g1/example/build/app/intermediates/cxx/Debug/5p1y4s1l/obj/arm64-v8a/liblc3.so",
+      "runtimeFiles": []
+    }
+  }
+}

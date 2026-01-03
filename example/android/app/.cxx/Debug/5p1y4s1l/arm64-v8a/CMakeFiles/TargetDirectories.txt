@@ -1,0 +1,3 @@
+/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/arm64-v8a/CMakeFiles/lc3.dir
+/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/arm64-v8a/CMakeFiles/rebuild_cache.dir

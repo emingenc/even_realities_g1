@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:typed_data';
 
 import '../bluetooth/g1_manager.dart';
@@ -7,9 +6,16 @@ import '../protocol/crc32.dart';
 
 /// G1 Bitmap feature for sending images to the glasses display.
 ///
-/// The G1 display supports monochrome BMP images with specific encoding.
+/// The G1 display supports monochrome BMP images (576x136 pixels).
+/// This implementation matches the visionlink reference.
 class G1Bitmap {
   final G1Manager _manager;
+
+  /// Canvas width for display
+  static const int canvasWidth = 576;
+
+  /// Canvas height for display  
+  static const int canvasHeight = 136;
 
   /// Maximum width of the display
   static const int maxWidth = 488;
@@ -22,128 +28,98 @@ class G1Bitmap {
   /// Send a BMP image to the glasses display.
   ///
   /// [bmpData] - Raw BMP file data (monochrome, 1-bit per pixel)
-  /// [x] - X position offset
-  /// [y] - Y position offset
-  Future<void> send(Uint8List bmpData, {int x = 0, int y = 0}) async {
+  /// The BMP should be 576x136 pixels for best results.
+  Future<void> send(Uint8List bmpData) async {
     if (!_manager.isConnected) {
       throw StateError('Not connected to glasses');
     }
 
-    final packets = buildBMPPackets(bmpData, x: x, y: y);
+    // Divide BMP data into 194-byte chunks (matching visionlink)
+    final chunks = _divideUint8List(bmpData, 194);
+    final List<List<int>> sentPackets = [];
 
-    for (final packet in packets) {
-      await _manager.sendCommand(packet);
-      await Future.delayed(const Duration(milliseconds: 50));
+    // Send all data packets
+    for (int i = 0; i < chunks.length; i++) {
+      final packet = await _sendBmpPacket(dataChunk: chunks[i], seq: i);
+      if (packet != null) {
+        sentPackets.add(packet);
+      }
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    // Send end packet
+    await _sendPacketEndPacket();
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // Concatenate all sent packets for CRC calculation
+    final concatenatedList = <int>[];
+    for (final packet in sentPackets) {
+      concatenatedList.addAll(packet);
+    }
+    final concatenatedPackets = Uint8List.fromList(concatenatedList);
+
+    // Send CRC packet
+    await _sendCRCPacket(packets: concatenatedPackets);
+  }
+
+  /// Divide a Uint8List into chunks of specified size
+  List<Uint8List> _divideUint8List(Uint8List data, int chunkSize) {
+    final chunks = <Uint8List>[];
+    for (int i = 0; i < data.length; i += chunkSize) {
+      final end = (i + chunkSize < data.length) ? i + chunkSize : data.length;
+      chunks.add(data.sublist(i, end));
+    }
+    return chunks;
+  }
+
+  /// Send a single BMP data packet
+  Future<List<int>?> _sendBmpPacket({
+    required Uint8List dataChunk,
+    int seq = 0,
+  }) async {
+    // Build packet: [0x15, seq, ...data]
+    final List<int> bmpCommand = [
+      G1Commands.bmp,
+      seq & 0xFF,
+      ...dataChunk,
+    ];
+
+    // First packet gets special header bytes
+    if (seq == 0) {
+      bmpCommand.insertAll(2, [0x00, 0x1c, 0x00, 0x00]);
+    }
+
+    try {
+      await _manager.sendCommand(bmpCommand, needsAck: false, delay: const Duration(milliseconds: 8));
+      return bmpCommand;
+    } catch (e) {
+      return null;
     }
   }
 
-  /// Build BMP packets for transmission.
-  ///
-  /// Returns a list of packets to send sequentially.
-  static List<Uint8List> buildBMPPackets(
-    Uint8List bmpData, {
-    int x = 0,
-    int y = 0,
-  }) {
-    // Skip BMP header (62 bytes for 1-bit BMP)
-    const headerSize = 62;
-    if (bmpData.length <= headerSize) {
-      throw ArgumentError('Invalid BMP data');
-    }
+  /// Send packet end marker
+  Future<void> _sendPacketEndPacket() async {
+    await _manager.sendCommand([G1Commands.packetEnd, 0x0d, 0x0e], needsAck: false);
+  }
 
-    // Read dimensions from BMP header
-    final view = ByteData.sublistView(bmpData);
-    final width = view.getInt32(18, Endian.little);
-    final height = view.getInt32(22, Endian.little).abs();
-
-    // Extract pixel data
-    final pixelData = bmpData.sublist(headerSize);
-
-    // Build packets
-    final packets = <Uint8List>[];
-    final maxPacketSize = 190; // Max payload per packet
-
-    // Calculate CRC32 of the pixel data
+  /// Send CRC packet for verification
+  Future<void> _sendCRCPacket({required Uint8List packets}) async {
     final crc = Crc32();
-    for (final byte in pixelData) {
-      crc.update([byte]);
-    }
-    final crcValue = crc.getValue();
+    crc.update(packets);
+    final crc32Checksum = crc.getValue() & 0xFFFFFFFF;
+    
+    final crc32Bytes = Uint8List(4);
+    crc32Bytes[0] = (crc32Checksum >> 24) & 0xFF;
+    crc32Bytes[1] = (crc32Checksum >> 16) & 0xFF;
+    crc32Bytes[2] = (crc32Checksum >> 8) & 0xFF;
+    crc32Bytes[3] = crc32Checksum & 0xFF;
 
-    // Build header packet
-    final headerPacket = _buildHeaderPacket(
-      width: width,
-      height: height,
-      x: x,
-      y: y,
-      totalSize: pixelData.length,
-      crc: crcValue,
-    );
-    packets.add(headerPacket);
+    final crcCommand = [
+      G1Commands.crc,
+      ...crc32Bytes,
+    ];
 
-    // Split data into chunks
-    int offset = 0;
-    int seq = 0;
-
-    while (offset < pixelData.length) {
-      final chunkSize = min(maxPacketSize, pixelData.length - offset);
-      final chunk = pixelData.sublist(offset, offset + chunkSize);
-
-      final dataPacket = _buildDataPacket(
-        seq: seq,
-        data: chunk,
-        isLast: offset + chunkSize >= pixelData.length,
-      );
-      packets.add(dataPacket);
-
-      offset += chunkSize;
-      seq++;
-    }
-
-    return packets;
-  }
-
-  static Uint8List _buildHeaderPacket({
-    required int width,
-    required int height,
-    required int x,
-    required int y,
-    required int totalSize,
-    required int crc,
-  }) {
-    final packet = Uint8List(16);
-    final view = ByteData.sublistView(packet);
-
-    packet[0] = G1Commands.bmp;
-    packet[1] = 0x00; // Header packet type
-
-    view.setUint16(2, width, Endian.little);
-    view.setUint16(4, height, Endian.little);
-    view.setUint16(6, x, Endian.little);
-    view.setUint16(8, y, Endian.little);
-    view.setUint32(10, totalSize, Endian.little);
-    view.setUint32(14, crc, Endian.little);
-
-    return packet;
-  }
-
-  static Uint8List _buildDataPacket({
-    required int seq,
-    required List<int> data,
-    required bool isLast,
-  }) {
-    final packet = Uint8List(4 + data.length);
-
-    packet[0] = G1Commands.bmp;
-    packet[1] = isLast ? 0x02 : 0x01; // Data packet type
-    packet[2] = seq & 0xFF;
-    packet[3] = (seq >> 8) & 0xFF;
-
-    for (int i = 0; i < data.length; i++) {
-      packet[4 + i] = data[i];
-    }
-
-    return packet;
+    await _manager.sendCommand(crcCommand, needsAck: false);
   }
 
   /// Convert RGB color to monochrome (1-bit).

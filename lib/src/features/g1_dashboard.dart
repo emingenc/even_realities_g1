@@ -99,24 +99,72 @@ class G1Dashboard {
     await _manager.sendCommand(command);
   }
 
-  /// Show the dashboard.
-  Future<void> show() async {
+  /// Show the dashboard at the specified position.
+  ///
+  /// This activates the dashboard display using the hardware set command.
+  /// Matches Python implementation: construct_dashboard_show_state
+  ///
+  /// [position] - Dashboard display position (0-8, default 0)
+  Future<void> show({int position = 0}) async {
     if (!_manager.isConnected) {
       throw StateError('Not connected to glasses');
     }
 
-    // Dashboard show command
-    await _manager.sendCommand([0x06, 0x01]);
+    // Python: [Command.DASHBOARD_POSITION, 0x07, 0x00, 0x01, 0x02, state_value, position]
+    // Command 0x26 with state ON (0x01)
+    final command = [
+      G1Commands.dashboardPosition, // 0x26
+      0x07, // length
+      0x00, // padding
+      0x01, // fixed byte
+      0x02, // fixed byte
+      0x01, // state: ON
+      position.clamp(0, 8), // position 0-8
+    ];
+    await _manager.sendCommand(command);
   }
 
+
   /// Hide the dashboard.
-  Future<void> hide() async {
+  ///
+  /// This hides the dashboard display using the hardware set command.
+  /// Sends to left glass first, waits 1 second, then sends to right glass
+  /// for smooth visual transition.
+  ///
+  /// [position] - Dashboard display position (0-8, default 0)
+  /// [delay] - Delay between left and right glass commands (default 1 second)
+  Future<void> hide({
+    int position = 0,
+    Duration delay = const Duration(seconds: 1),
+  }) async {
     if (!_manager.isConnected) {
       throw StateError('Not connected to glasses');
     }
 
-    // Dashboard hide command
-    await _manager.sendCommand([0x06, 0x00]);
+    // Python: [Command.DASHBOARD_POSITION, 0x07, 0x00, 0x01, 0x02, state_value, position]
+    // Command 0x26 with state OFF (0x00)
+    final command = [
+      G1Commands.dashboardPosition, // 0x26
+      0x07, // length
+      0x00, // padding
+      0x01, // fixed byte
+      0x02, // fixed byte
+      0x00, // state: OFF
+      position.clamp(0, 8), // position 0-8
+    ];
+
+    // Send to left glass first
+    if (_manager.leftGlass != null) {
+      await _manager.leftGlass!.sendData(command);
+    }
+
+    // Wait for delay
+    await Future.delayed(delay);
+
+    // Then send to right glass
+    if (_manager.rightGlass != null) {
+      await _manager.rightGlass!.sendData(command);
+    }
   }
 
   /// Set dashboard mode and secondary pane.
@@ -145,19 +193,19 @@ class G1Dashboard {
   }
 
   /// Switch to show the Notes pane on the dashboard.
+  ///
+  /// Sets the dashboard to dual layout which shows the notes pane.
   Future<void> showNotesPane() async {
-    await setPaneMode(
-      mode: G1DashboardModeType.full,
-      secondaryPane: G1DashboardPane.notes,
-    );
+    // Use DUAL layout to show notes pane (matches fahrplan reference)
+    await setLayout(G1DashboardLayout.dual);
   }
 
   /// Switch to show the Calendar pane on the dashboard.
+  ///
+  /// Sets the dashboard to full layout which shows calendar pane.
   Future<void> showCalendarPane() async {
-    await setPaneMode(
-      mode: G1DashboardModeType.full,
-      secondaryPane: G1DashboardPane.calendar,
-    );
+    // Use FULL layout to show calendar pane (matches fahrplan reference)
+    await setLayout(G1DashboardLayout.full);
   }
 
   /// Switch to show the News pane on the dashboard.
@@ -185,11 +233,17 @@ class G1Dashboard {
   }
 
   /// Show a calendar event on the dashboard.
+  ///
+  /// This sets the dashboard to full layout and displays the calendar event.
   Future<void> showCalendar(G1CalendarModel calendar) async {
     if (!_manager.isConnected) {
       throw StateError('Not connected to glasses');
     }
 
+    // First set dashboard to full layout (matches fahrplan reference)
+    await setLayout(G1DashboardLayout.full);
+    
+    // Then send the calendar item
     await _manager.sendCommand(calendar.buildDashboardCommand());
   }
 

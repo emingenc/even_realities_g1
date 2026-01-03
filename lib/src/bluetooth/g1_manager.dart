@@ -182,7 +182,109 @@ class G1Manager {
     ));
     onConnectionChanged?.call(G1ConnectionState.scanning, null);
 
+    // First check for already connected/bonded devices
+    onUpdate?.call('Checking for paired glasses...');
+    final connected = await _checkConnectedDevices(onUpdate, onGlassesFound, onConnected);
+    if (connected) {
+      return;
+    }
+
     await _startScan(onUpdate, onGlassesFound, onConnected, timeout);
+  }
+
+  /// Check for already connected or bonded G1 glasses
+  Future<bool> _checkConnectedDevices(
+    OnStatusUpdate? onUpdate,
+    OnGlassesFound? onGlassesFound,
+    OnConnected? onConnected,
+  ) async {
+    try {
+      // Check system connected devices
+      final connectedDevices = await FlutterBluePlus.systemDevices([]);
+      debugPrint('Found ${connectedDevices.length} system connected devices');
+      
+      for (final device in connectedDevices) {
+        final name = device.platformName;
+        debugPrint('Checking connected device: $name');
+        
+        if (name.contains(BluetoothConstants.leftGlassPattern) && _leftGlass == null) {
+          debugPrint('Found already-connected left glass: $name');
+          _leftGlass = G1Glass(
+            name: name,
+            device: device,
+            side: GlassSide.left,
+            onDataReceived: _handleDataReceived,
+          );
+          await _leftGlass!.connect();
+          _setupReconnect(_leftGlass!);
+          onUpdate?.call('Left glass found (already paired): $name');
+        } else if (name.contains(BluetoothConstants.rightGlassPattern) && _rightGlass == null) {
+          debugPrint('Found already-connected right glass: $name');
+          _rightGlass = G1Glass(
+            name: name,
+            device: device,
+            side: GlassSide.right,
+            onDataReceived: _handleDataReceived,
+          );
+          await _rightGlass!.connect();
+          _setupReconnect(_rightGlass!);
+          onUpdate?.call('Right glass found (already paired): $name');
+        }
+      }
+
+      // Check bonded devices as well
+      final bondedDevices = await FlutterBluePlus.bondedDevices;
+      debugPrint('Found ${bondedDevices.length} bonded devices');
+      
+      for (final device in bondedDevices) {
+        final name = device.platformName;
+        debugPrint('Checking bonded device: $name');
+        
+        if (name.contains(BluetoothConstants.leftGlassPattern) && _leftGlass == null) {
+          debugPrint('Found bonded left glass: $name');
+          _leftGlass = G1Glass(
+            name: name,
+            device: device,
+            side: GlassSide.left,
+            onDataReceived: _handleDataReceived,
+          );
+          await _leftGlass!.connect();
+          _setupReconnect(_leftGlass!);
+          onUpdate?.call('Left glass found (bonded): $name');
+        } else if (name.contains(BluetoothConstants.rightGlassPattern) && _rightGlass == null) {
+          debugPrint('Found bonded right glass: $name');
+          _rightGlass = G1Glass(
+            name: name,
+            device: device,
+            side: GlassSide.right,
+            onDataReceived: _handleDataReceived,
+          );
+          await _rightGlass!.connect();
+          _setupReconnect(_rightGlass!);
+          onUpdate?.call('Right glass found (bonded): $name');
+        }
+      }
+
+      // Check if both glasses are now connected
+      if (_leftGlass != null && _rightGlass != null &&
+          _leftGlass!.isConnected && _rightGlass!.isConnected) {
+        _connectionCallbackFired = true;
+        _isScanning = false;
+        
+        onGlassesFound?.call(_leftGlass!.name, _rightGlass!.name);
+        _connectionStateController.add(G1ConnectionEvent(
+          state: G1ConnectionState.connected,
+          leftGlassName: _leftGlass!.name,
+          rightGlassName: _rightGlass!.name,
+        ));
+        onConnectionChanged?.call(G1ConnectionState.connected, null);
+        onConnected?.call();
+        return true;
+      }
+    } catch (e) {
+      debugPrint('Error checking connected devices: $e');
+    }
+    return false;
   }
 
   Future<void> _startScan(
@@ -211,9 +313,13 @@ class G1Manager {
       (results) {
         for (final result in results) {
           final deviceName = result.device.platformName;
-          if (deviceName.isNotEmpty) {
+          final advName = result.advertisementData.advName;
+          final name = deviceName.isNotEmpty ? deviceName : advName;
+          
+          if (name.isNotEmpty) {
+            debugPrint('Found device: $name (platformName: $deviceName, advName: $advName)');
             _handleDeviceFound(
-                result, onUpdate, onGlassesFound, onConnected);
+                result, name, onUpdate, onGlassesFound, onConnected);
           }
         }
       },
@@ -224,7 +330,7 @@ class G1Manager {
     );
 
     await FlutterBluePlus.startScan(
-      withServices: [Guid(BluetoothConstants.uartServiceUuid)],
+      // Note: G1 glasses may not advertise UART service in ads, so we filter by name pattern instead
       timeout: timeout,
       androidUsesFineLocation: true,
     );
@@ -232,11 +338,11 @@ class G1Manager {
 
   Future<void> _handleDeviceFound(
     ScanResult result,
+    String deviceName,
     OnStatusUpdate? onUpdate,
     OnGlassesFound? onGlassesFound,
     OnConnected? onConnected,
   ) async {
-    final deviceName = result.device.platformName;
     G1Glass? glass;
 
     if (deviceName.contains(BluetoothConstants.leftGlassPattern) &&
@@ -360,6 +466,41 @@ class G1Manager {
         null,
       );
     }
+  }
+
+  /// Configure Even AI interaction callbacks (touch bar + AI session lifecycle).
+  ///
+  /// This mirrors the behavior in the visionlink and fahrplan samples:
+  /// - left tap  => page up
+  /// - right tap => page down
+  /// - double tap => exit to dashboard
+  /// - AI session start/stop => long-press on touch bar begins/ends recording
+  void configureEvenAI({
+    void Function()? onLeftTap,
+    void Function()? onRightTap,
+    void Function()? onDoubleTap,
+    void Function()? onExitToDashboard,
+    void Function()? onAISessionStart,
+    void Function(List<int> audioData)? onAISessionEnd,
+  }) {
+    microphone.onLeftTap = onLeftTap;
+    microphone.onRightTap = onRightTap;
+    microphone.onDoubleTap = onDoubleTap;
+    microphone.onExitToDashboard = onExitToDashboard;
+    microphone.onAISessionStart = onAISessionStart;
+    microphone.onAISessionEnd = onAISessionEnd;
+  }
+
+  /// Configure voice note callbacks (quick note notification + audio fetch).
+  ///
+  /// When the glasses send a quick note notification, the newest note is
+  /// automatically fetched and the audio is provided via [onAudioReady].
+  void configureVoiceNotes({
+    void Function(List<VoiceNote> notes)? onNotesUpdated,
+    void Function(int index, List<int> audioData)? onAudioReady,
+  }) {
+    voiceNote.onNotesUpdated = onNotesUpdated;
+    voiceNote.onAudioReady = onAudioReady;
   }
 
   /// Stop scanning for glasses.

@@ -1,0 +1,23 @@
+# ninja log v5
+1	104	1767407076633767640	CMakeFiles/lc3.dir/liblc3/attdet.c.o	ba426f55d93eca24
+3	106	1767407076642375216	CMakeFiles/lc3.dir/liblc3/bwdet.c.o	1e709c77b43ea4c6
+4	108	1767407076638272200	CMakeFiles/lc3.dir/liblc3/energy.c.o	c9f2d278708fd4d0
+9	110	1767407076639302370	CMakeFiles/lc3.dir/liblc3/plc.c.o	5e1638b99ac88095
+2	124	1767407076645092560	CMakeFiles/lc3.dir/liblc3/bits.c.o	985b067f426baa37
+7	126	1767407076647350694	CMakeFiles/lc3.dir/liblc3/mdct.c.o	e6c00a58dbde7e2a
+6	129	1767407076654355805	CMakeFiles/lc3.dir/liblc3/lc3.c.o	27a3c02255ee6f4a
+11	140	1767407076662135919	CMakeFiles/lc3.dir/liblc3/sns.c.o	bb7b4e3d3ef9addf
+12	143	1767407076678965819	CMakeFiles/lc3.dir/liblc3/spec.c.o	857375e7fe1c1980
+14	145	1767407076669884408	CMakeFiles/lc3.dir/liblc3/tables.c.o	e4a3f2071476bedc
+7	150	1767407076683282961	CMakeFiles/lc3.dir/liblc3/ltpf.c.o	67a6bd5bc2e17d0d
+104	164	1767407076702063661	CMakeFiles/lc3.dir/liblc3/tns.c.o	9320d32062ad150e
+124	178	1767407076718383642	CMakeFiles/lc3.dir/rnnoise/pitch.c.o	f9cda6de941c74c0
+106	178	1767407076717791765	CMakeFiles/lc3.dir/rnnoise/celt_lpc.c.o	32b28b28dd0f2be2
+127	179	1767407076719303479	CMakeFiles/lc3.dir/rnnoise/rnn.c.o	9a84cd118fe059fb
+140	180	1767407076721978698	CMakeFiles/lc3.dir/rnnoise/rnn_reader.c.o	e654f1d0ee90ac09
+108	182	1767407076723143036	CMakeFiles/lc3.dir/rnnoise/denoise.c.o	a53b038db4a1638b
+110	182	1767407076723160161	CMakeFiles/lc3.dir/rnnoise/kiss_fft.c.o	3998be5e5342421f
+129	216	1767407076757343963	CMakeFiles/lc3.dir/rnnoise/rnn_data.c.o	f1b23ccf125866cd
+0	401	1767407076941116317	CMakeFiles/lc3.dir/liblc3.cpp.o	6a5ae21ce7e64e25
+402	444	1767407076985120991	/Users/emingenc/Documents/even_realities_g1/example/build/app/intermediates/cxx/Debug/5p1y4s1l/obj/armeabi-v7a/liblc3.so	5e8f4db53b5fd908
+10	184	1767407734630466219	/Users/emingenc/Documents/even_realities_g1/example/build/app/intermediates/cxx/Debug/5p1y4s1l/obj/armeabi-v7a/liblc3.so	5e8f4db53b5fd908

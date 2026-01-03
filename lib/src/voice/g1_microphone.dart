@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import '../bluetooth/g1_connection_state.dart';
 import '../bluetooth/g1_manager.dart';
 import '../protocol/commands.dart';
@@ -41,8 +43,17 @@ class G1Microphone {
   /// Callback when wake word detection stops
   void Function()? onWakeWordStop;
 
-  /// Callback for page control events
+  /// Callback for page control events (legacy, use onLeftTap/onRightTap instead)
   void Function(bool isUp)? onPageControl;
+
+  /// Callback when left touchbar is tapped (page up in Even AI mode)
+  void Function()? onLeftTap;
+
+  /// Callback when right touchbar is tapped (page down in Even AI mode)
+  void Function()? onRightTap;
+
+  /// Callback for double-tap on touchbar (exits Even AI to dashboard)
+  void Function()? onDoubleTap;
 
   /// Callback when user exits to dashboard
   void Function()? onExitToDashboard;
@@ -65,9 +76,12 @@ class G1Microphone {
       throw StateError('Not connected to glasses');
     }
 
+    // Set active BEFORE sending command to avoid race condition where
+    // audio packets arrive before _isActive is set
+    _isActive = true;
+    
     // Send open mic command to right glass only (per original implementation)
     await _manager.rightGlass?.sendData([G1Commands.openMic, 0x01]);
-    _isActive = true;
   }
 
   /// Disable the microphone on the glasses.
@@ -114,11 +128,19 @@ class G1Microphone {
     switch (subCommand) {
       case G1AISubCommands.exitToDashboard:
         _isActive = false;
+        onDoubleTap?.call();
         onExitToDashboard?.call();
         break;
 
       case G1AISubCommands.pageControl:
-        onPageControl?.call(side == GlassSide.left);
+        // Left touchbar = page up, Right touchbar = page down
+        final isUp = side == GlassSide.left;
+        if (isUp) {
+          onLeftTap?.call();
+        } else {
+          onRightTap?.call();
+        }
+        onPageControl?.call(isUp);
         break;
 
       case G1AISubCommands.startWakeWord:
@@ -130,13 +152,22 @@ class G1Microphone {
         break;
 
       case G1AISubCommands.startRecording:
+        // Even AI started (long press on touchbar)
+        // Must enable the microphone to receive audio data
         _isActive = true;
+        _aiSessionCollector.isRecording = true;
         _aiSessionCollector.reset();
+        // Enable mic in response to glasses request
+        _manager.rightGlass?.sendData([G1Commands.openMic, 0x01]);
         onAISessionStart?.call();
         break;
 
       case G1AISubCommands.stopRecording:
+        // Even AI stopped (user released touchbar)
         _isActive = false;
+        _aiSessionCollector.isRecording = false;
+        // Disable mic
+        _manager.rightGlass?.sendData([G1Commands.openMic, 0x00]);
         final audioData = _aiSessionCollector.getAllDataAndReset();
         if (audioData.isNotEmpty) {
           onAISessionEnd?.call(audioData);
@@ -147,7 +178,11 @@ class G1Microphone {
 
   void _handleMicResponse(GlassSide side, int status, int enable) {
     if (status == G1ResponseStatus.success) {
-      _isActive = enable == 1;
+      // Don't overwrite _isActive if we're in an AI session
+      // The AI session manages its own recording state
+      if (!_aiSessionCollector.isRecording) {
+        _isActive = enable == 1;
+      }
     } else if (status == G1ResponseStatus.failure) {
       // Retry
       if (enable == 1) {
@@ -159,7 +194,11 @@ class G1Microphone {
   }
 
   void _handleVoiceData(GlassSide side, int seq, List<int> audioData) {
-    if (!_isActive) return;
+    // Accept audio if either _isActive OR if we're in an AI recording session
+    if (!_isActive && !_aiSessionCollector.isRecording) {
+      debugPrint('[G1Microphone] Dropping audio packet - mic not active');
+      return;
+    }
 
     _aiSessionCollector.addChunk(seq, audioData);
 

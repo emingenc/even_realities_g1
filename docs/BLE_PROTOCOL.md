@@ -85,13 +85,13 @@ This section lists the command IDs and how they map to the Flutter library.
 ### Dashboard Set (`0x06`)
 - Multi-subcommand container.
 - Used for time/weather/calendar/news/map panes.
-- Flutter: feature `g1_dashboard.dart` and `g1_time_weather.dart`.
+- Flutter: feature `g1_dashboard.dart` and `g1_time_weather.dart` (pane mode, calendar, news, stock, map all implemented).
 
 Wiki highlights:
 - Pane mode set (subcommand `0x06`)
 - Calendar pane set (subcommand `0x03`)
-- News pane set (subcommand `0x05`) (TODO in wiki)
-- Map pane set (subcommand `0x07`) (TODO in wiki)
+- News pane set (subcommand `0x05`)
+- Map pane set (subcommand `0x07`)
 
 ### Timer Control (`0x07`) (TODO)
 Not implemented in this Flutter library.
@@ -99,7 +99,7 @@ Not implemented in this Flutter library.
 ### Head Up Action Set (`0x08`)
 Controls what happens on head-up.
 - Wiki: both sides.
-- Not fully wired in Flutter (TBD).
+- Flutter: implemented via `g1_settings.setHeadUpAction()`.
 
 ### Teleprompter Control (`0x09`) (TODO)
 Not implemented in this Flutter library.
@@ -130,7 +130,7 @@ Not implemented as a first-class feature.
 ### Microphone Set (`0x0E`)
 - Enables/disables microphone streaming.
 - Wiki: Left side.
-- Flutter: `lib/src/voice/`.
+- Flutter: `lib/src/voice/` (enable/disable, wake-word and AI session events).
 
 ### Translate Control (`0x0F`) (TODO)
 Not implemented as a first-class feature (Flutter has `g1_translate.dart`, but full protocol coverage is TBD).
@@ -165,7 +165,7 @@ Subcommands:
 - Reboot: `0x23 0x72`
 - Firmware build info get: `0x23 0x74`
 
-Not implemented in Flutter.
+Flutter: implemented in `g1_settings.dart` (`setDebugLogging`, `reboot`, `requestFirmwareInfo`).
 
 ### Teleprompter Suspend (`0x24`) (TODO)
 Not implemented.
@@ -174,12 +174,12 @@ Not implemented.
 Not implemented.
 
 ### Hardware Set (`0x26`)
-Used for display height/depth, double-tap action, long-press, etc.
-Flutter maps this as `G1Commands.dashboardPosition`, but the wiki calls it Hardware Set — naming mismatch.
+Used for display height/depth, double-tap action, long-press, head-lift mic.
+Flutter: implemented in `g1_settings.dart` (`setDisplayPosition`, `setDoubleTapAction`, `setLongPressEnabled`, `setHeadLiftMicEnabled`).
 
 ### Wear Detection Set (`0x27`)
 - Enable/disable wear detection.
-- Flutter: `G1Commands.glassWear`.
+- Flutter: `g1_settings.setWearDetection()`.
 
 ### Brightness Get (`0x29`) (TODO)
 Not implemented.
@@ -187,8 +187,8 @@ Not implemented.
 ### Silent Mode Get (`0x2B`) (TODO)
 Not implemented.
 
-### Info Battery and Firmware Get (`0x2C`) (TODO)
-Not implemented.
+### Info Battery and Firmware Get (`0x2C`)
+Flutter: implemented in `g1_settings.dart` (`requestBatteryInfo`, `requestFirmwareInfo`).
 
 ### Notification App List Get (`0x2E`) (TODO)
 Not implemented.
@@ -214,14 +214,14 @@ Not implemented.
 ### Notification Auto Display Get (`0x3C`) (TODO)
 Not implemented.
 
-### Language Set (`0x3D`) (TODO)
-Not implemented.
+### Language Set (`0x3D`)
+Flutter: implemented in `g1_settings.setLanguage()`.
 
 ### Buried Point Get (`0x3E`) (TODO)
 Not implemented.
 
 ### Hardware Get (`0x3F`) (TODO)
-Not implemented.
+Command constant exists; getter not yet implemented in Flutter.
 
 ### Notification Auto Display Set (`0x4F`)
 Not implemented.

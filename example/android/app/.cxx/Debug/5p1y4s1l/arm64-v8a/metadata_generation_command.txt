@@ -1,0 +1,19 @@
+                        -H/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=24
+-DANDROID_PLATFORM=android-24
+-DANDROID_ABI=arm64-v8a
+-DCMAKE_ANDROID_ARCH_ABI=arm64-v8a
+-DANDROID_NDK=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456
+-DCMAKE_ANDROID_NDK=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456
+-DCMAKE_TOOLCHAIN_FILE=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/build/cmake/android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=/Users/emingenc/Library/Android/sdk/cmake/3.22.1/bin/ninja
+-DCMAKE_CXX_FLAGS=-std=c++17
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/Users/emingenc/Documents/even_realities_g1/example/build/app/intermediates/cxx/Debug/5p1y4s1l/obj/arm64-v8a
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=/Users/emingenc/Documents/even_realities_g1/example/build/app/intermediates/cxx/Debug/5p1y4s1l/obj/arm64-v8a
+-DCMAKE_BUILD_TYPE=Debug
+-B/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/arm64-v8a
+-GNinja
+                        Build command args: []
+                        Version: 2

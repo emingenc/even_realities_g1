@@ -1,0 +1,102 @@
+[
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -std=c++17 -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3.cpp.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3.cpp",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3.cpp"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/attdet.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/attdet.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/attdet.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/bits.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/bits.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/bits.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/bwdet.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/bwdet.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/bwdet.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/energy.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/energy.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/energy.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/lc3.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/lc3.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/lc3.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/ltpf.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/ltpf.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/ltpf.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/mdct.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/mdct.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/mdct.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/plc.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/plc.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/plc.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/sns.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/sns.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/sns.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/spec.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/spec.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/spec.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/tables.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/tables.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/tables.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/liblc3/tns.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/tns.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/liblc3/tns.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/rnnoise/celt_lpc.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/celt_lpc.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/celt_lpc.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/rnnoise/denoise.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/denoise.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/denoise.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/rnnoise/kiss_fft.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/kiss_fft.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/kiss_fft.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/rnnoise/pitch.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/pitch.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/pitch.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/rnnoise/rnn.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/rnn.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/rnn.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/rnnoise/rnn_data.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/rnn_data.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/rnn_data.c"
+},
+{
+  "directory": "/Users/emingenc/Documents/even_realities_g1/example/android/app/.cxx/Debug/5p1y4s1l/armeabi-v7a",
+  "command": "/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/emingenc/Library/Android/sdk/ndk/29.0.13113456/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dlc3_EXPORTS -I/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/lc3.dir/rnnoise/rnn_reader.c.o -c /Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/rnn_reader.c",
+  "file": "/Users/emingenc/Documents/even_realities_g1/example/android/app/src/main/cpp/rnnoise/rnn_reader.c"
+}
+]

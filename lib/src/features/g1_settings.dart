@@ -92,7 +92,7 @@ class G1Settings {
       throw StateError('Not connected to glasses');
     }
 
-    // Wiki: Brightness Set (0x01) payload is [level(0x00..0x2A), auto(0/1)] and is sent to Right.
+    // Python: [Command.BRIGHTNESS, level, auto] sent to BOTH glasses
     final bool auto = brightness == G1Brightness.auto;
     final int level = switch (brightness) {
       G1Brightness.auto => 0x00,
@@ -103,14 +103,11 @@ class G1Settings {
       G1Brightness.level5 => 0x2A,
     };
 
-    await _manager.sendCommandToSide(
-      GlassSide.right,
-      [
-        G1Commands.brightness,
-        level & 0xFF,
-        auto ? 0x01 : 0x00,
-      ],
-    );
+    await _manager.sendCommand([
+      G1Commands.brightness,
+      level & 0xFF,
+      auto ? 0x01 : 0x00,
+    ]);
   }
 
   /// Enable or disable silent mode.
@@ -136,15 +133,12 @@ class G1Settings {
       throw StateError('Not connected to glasses');
     }
 
-    // Wiki: Head Up Angle Set (0x0B) appears as [0x0B, 0x00..0x3C, 0x01] and is sent to Right.
-    await _manager.sendCommandToSide(
-      GlassSide.right,
-      [
-        G1Commands.headUpAngle,
-        angle.clamp(0, 60),
-        0x01,
-      ],
-    );
+    // Python: [Command.HEADUP_ANGLE, angle, 0x01] sent to BOTH glasses
+    await _manager.sendCommand([
+      G1Commands.headUpAngle,
+      angle.clamp(0, 60),
+      0x01,
+    ]);
   }
 
   /// Enable or disable head-up display mode.
@@ -169,6 +163,7 @@ class G1Settings {
 
     // Hardware Set (0x26): 26 06 00 [seq] 04 [action]
     // Subcommand 0x04 is for double-tap action
+    // Send to both glasses to ensure setting is applied
     final seq = _nextSeq();
     await _manager.sendCommand([
       G1Commands.hardwareSet,
@@ -189,6 +184,7 @@ class G1Settings {
     }
 
     // Hardware Set (0x26): 26 06 00 [seq] 07 [0/1]
+    // Send to both glasses to ensure setting is applied
     final seq = _nextSeq();
     await _manager.sendCommand([
       G1Commands.hardwareSet,
@@ -209,15 +205,44 @@ class G1Settings {
     }
 
     // Hardware Set (0x26): 26 06 00 [seq] 08 [0/1]
+    // Note: Mic-related commands go to right glass only per protocol
     final seq = _nextSeq();
-    await _manager.sendCommand([
-      G1Commands.hardwareSet,
-      0x06, // length
-      0x00, // padding
-      seq,
-      G1HardwareSubCommands.headLiftMic,
-      enabled ? 0x01 : 0x00,
-    ]);
+    await _manager.sendCommandToSide(
+      GlassSide.right,
+      [
+        G1Commands.hardwareSet,
+        0x06, // length
+        0x00, // padding
+        seq,
+        G1HardwareSubCommands.headLiftMic,
+        enabled ? 0x01 : 0x00,
+      ],
+    );
+  }
+
+  /// Start wake-word detection (AI wake word).
+  Future<void> startWakeWordDetection() async {
+    if (!_manager.isConnected) {
+      throw StateError('Not connected to glasses');
+    }
+
+    // Best-effort: send start AI wake-word subcommand to right glass
+    await _manager.sendCommandToSide(
+      GlassSide.right,
+      [G1Commands.startAI, G1AISubCommands.startWakeWord],
+    );
+  }
+
+  /// Stop wake-word detection.
+  Future<void> stopWakeWordDetection() async {
+    if (!_manager.isConnected) {
+      throw StateError('Not connected to glasses');
+    }
+
+    await _manager.sendCommandToSide(
+      GlassSide.right,
+      [G1Commands.startAI, G1AISubCommands.stopWakeWord],
+    );
   }
 
   /// Set what happens when the user looks up (head lift action).
@@ -257,6 +282,7 @@ class G1Settings {
     }
 
     // Hardware Set (0x26): 26 08 00 [seq] 02 [preview] [height] [depth]
+    // Send to both glasses to ensure setting is applied
     final seq = _nextSeq();
     await _manager.sendCommand([
       G1Commands.hardwareSet,
